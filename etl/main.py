@@ -1,41 +1,24 @@
-import os
 import time
-import requests
-from datetime import datetime
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-# Importar Base e BitcoinPreco do database.py
-from database.tabela_bitcoin_precos import Base, BitcoinPreco
-
-# Carrega variáveis de ambiente do arquivo .env
-load_dotenv()
-
-# Lê as variáveis separadas do arquivo .env (sem SSL)
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT")
-POSTGRES_DB = os.getenv("POSTGRES_DB")
-
-# Cria o engine e a sessão
-DATABASE_URL = (
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
-    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-)
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
-
-def testar_conexao():
-    try:
-        engine = create_engine(DATABASE_URL)
-        # Abre uma conexão e fecha imediatamente
-        with engine.connect() as conexao:
-            print(" Conexão com o banco de dados bem-sucedida!")
-    except Exception as e:
-        print(" Erro ao conectar com o banco de dados:")
-        print(e)
+from database.tabela_bitcoin_precos import criar_tabela
+from extract import extrair_dados_bitcoin
+from transform import tratar_dados_bitcoin
+from load import salvar_dados_postgres
 
 if __name__ == "__main__":
-    testar_conexao()
+    criar_tabela()
+    print("Iniciando ETL com atualização a cada 15 segundos... (CTRL+C para interromper)")
+
+    while True:
+        try:
+            dados_json = extrair_dados_bitcoin()
+            if dados_json:
+                dados_tratados = tratar_dados_bitcoin(dados_json)
+                print("Dados Tratados:", dados_tratados)
+                salvar_dados_postgres(dados_tratados)
+            time.sleep(15)
+        except KeyboardInterrupt:
+            print("\nProcesso interrompido pelo usuário. Finalizando...")
+            break
+        except Exception as e:
+            print(f"Erro durante a execução: {e}")
+            time.sleep(15)
