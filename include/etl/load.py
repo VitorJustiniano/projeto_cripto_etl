@@ -1,8 +1,7 @@
-from database.tabela_bitcoin_precos import Session, BitcoinPreco
+from include.etl.database.tabela_bitcoin_precos import get_session, BitcoinPreco
 
 def salvar_dados_postgres(dados):
-    """Salva os dados no banco PostgreSQL."""
-    session = Session()
+    session = get_session()
     novo_registro = BitcoinPreco(**dados)
     session.add(novo_registro)
     session.commit()

@@ -23,7 +23,7 @@ with DAG(
 ) as dag:
 
     def tarefa_extract_func(ti):
-        criar_tabela()
+        criar_tabela()  # garante que a tabela existe
         dados = extrair_dados_bitcoin()
         if not dados:
             raise ValueError("Erro ao extrair os dados")
