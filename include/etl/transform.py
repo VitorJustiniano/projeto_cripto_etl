@@ -1,31 +1,26 @@
 import pandas as pd
+import json
 from datetime import datetime
 
-def tratar_dados_bitcoin(dados_json):
-    """Transforma os dados brutos da API, converte em Dataframe e aplica os tratamentos."""
-    
+def tratar_dados_bitcoin():
+    """Transforma os dados extraídos e salva em JSON tratado."""
+    with open('/tmp/dados_extraidos.json', 'r') as f:
+        dados_json = json.load(f)
+
     valor = float(dados_json['data']['amount'])
     criptomoeda = dados_json['data']['base']
     moeda = dados_json['data']['currency']
-    timestamp = datetime.now()
-    
+    timestamp = datetime.now().isoformat()
 
     df = pd.DataFrame([{
         "valor": valor,
-        "criptomoeda": criptomoeda,
-        "moeda": moeda,
+        "criptomoeda": criptomoeda.upper(),
+        "moeda": moeda.upper(),
         "timestamp": timestamp
     }])
 
-    #Garantir que os tipos estao corretos
-    df['valor'] = pd.to_numeric(df['valor'], errors='coerce')
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-    #Normalizar texto
-    df['criptomoeda'] = df['criptomoeda'].str.upper()
-    df['moeda'] = df['moeda'].str.upper()
-
-    #Remove valores nulos
     df = df.dropna()
+    dados_tratados = df.iloc[0].to_dict()
 
-    return df.iloc[0].to_dict()
+    with open('/tmp/dados_tratados.json', 'w') as f:
+        json.dump(dados_tratados, f)
