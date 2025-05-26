@@ -21,22 +21,22 @@ services:
       retries: 5
 
 
-  # Serviço opcional: Streamlit (caso deseje no futuro)
-  # streamlit:
-  #   build:
-  #     context: ./streamlit_app
-  #     dockerfile: Dockerfile
-  #   container_name: crypto_streamlit
-  #   ports:
-  #     - "8501:8501"
-  #   networks:
-  #     - airflow_net
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./streamlit_app:/app
-  #   env_file: .env
+  # Streamlit
+  streamlit:
+    build:
+      context: ./streamlit_app
+      dockerfile: Dockerfile
+    container_name: crypto_streamlit
+    ports:
+      - "8501:8501"
+    networks:
+      - airflow_net
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./streamlit_app:/app
+    env_file: .env
   
 volumes:
   postgres_data:
