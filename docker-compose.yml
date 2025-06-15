@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5433:5432"
+      - "5433:5432"  # Porta externa 5433 para evitar conflito com a 5432 usada pelo Airflow
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -20,8 +20,6 @@ services:
       timeout: 5s
       retries: 5
 
-
-  # Streamlit
   streamlit:
     build:
       context: ./streamlit_app
@@ -37,10 +35,10 @@ services:
     volumes:
       - ./streamlit_app:/app
     env_file: .env
-  
-volumes:
-  postgres_data:
 
 networks:
   airflow_net:
     driver: bridge
+
+volumes:
+  postgres_data:
