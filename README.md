@@ -63,26 +63,32 @@ projeto_cripto_etl/
 └── README.md                          # Este arquivo
 ```
 
-Clone o repositório:
+1. Clone o repositório
 
 git clone https://github.com/seu-usuario/projeto_cripto_etl.git
 cd projeto_cripto_etl
 
-Subir os containers
+2. Suba os containers
 
-astro dev start  # inicia o Airflow
-docker compose up streamlit  # inicia o dashboard
+# Inicia o ambiente do Apache Airflow
+astro dev start
 
-Acessar os serviços
+# Em outro terminal, inicia o dashboard Streamlit
+docker compose up streamlit
 
-Airflow: http://localhost:8080
-Streamlit: http://localhost:8501
-PostgreSQL (via PgAdmin ou outro): localhost:5432
+3. Acesse os serviços
+🔁 Airflow: http://localhost:8080
+
+📊 Streamlit Dashboard: http://localhost:8501
+
+🗄️ PostgreSQL (via PgAdmin ou outro): localhost:5432
 
 🛠️ Em Desenvolvimento
-Adição de novas criptomoedas (ex: Solana)
-Criação de dashboards no PowerBI
-Deploy na nuvem via VPS
+✅ Adição de novas criptomoedas (ex: Solana)
+
+📈 Criação de dashboards adicionais (Power BI)
+
+☁️ Deploy na nuvem via VPS
 
 👨‍💻 Autor
 Vitor Justiniano
